@@ -24,6 +24,8 @@ router.get("/cars", async (req, res) => {
 router.get("/cars/:id", async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
+    const header = req.headers.authorization;
+    console.log(header);
     if (!car) {
       return res.status(404).json({ message: "Car not found" });
     }
