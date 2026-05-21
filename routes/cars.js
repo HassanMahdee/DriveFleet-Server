@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Car = require("../models/Car");
+const verifyJWT = require("../middleware/verifyJWT");
 
 router.get("/cars", async (req, res) => {
   try {
@@ -24,8 +25,6 @@ router.get("/cars", async (req, res) => {
 router.get("/cars/:id", async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
-    const header = req.headers.authorization;
-    console.log(header);
     if (!car) {
       return res.status(404).json({ message: "Car not found" });
     }
@@ -35,9 +34,9 @@ router.get("/cars/:id", async (req, res) => {
   }
 });
 
-router.get("/my-cars", async (req, res) => {
+router.get("/my-cars", verifyJWT, async (req, res) => {
   try {
-    const ownerEmail = "qwer@qwer.ty";
+    const ownerEmail = req.user.email;
     const cars = await Car.find({ ownerEmail });
     res.json(cars);
   } catch (err) {
@@ -45,11 +44,9 @@ router.get("/my-cars", async (req, res) => {
   }
 });
 
-router.post("/cars", async (req, res) => {
+router.post("/cars", verifyJWT, async (req, res) => {
   try {
-    // TEMPORARY: hardcode an email (replace with your own test email)
-    const tempOwnerEmail = "qwer@qwer.ty";
-    const car = new Car({ ...req.body, ownerEmail: tempOwnerEmail });
+    const car = new Car({ ...req.body, ownerEmail: req.user.email });
     const saved = await car.save();
     res.status(201).json(saved);
   } catch (err) {
@@ -58,10 +55,9 @@ router.post("/cars", async (req, res) => {
   }
 });
 
-router.patch("/cars/:id", async (req, res) => {
+router.patch("/cars/:id", verifyJWT, async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
-    console.log(car, req.params.id);
     if (!car) {
       return res.status(404).json({ message: "Car not found" });
     }
@@ -74,7 +70,7 @@ router.patch("/cars/:id", async (req, res) => {
   }
 });
 
-router.delete("/cars/:id", async (req, res) => {
+router.delete("/cars/:id", verifyJWT, async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
     if (!car) {

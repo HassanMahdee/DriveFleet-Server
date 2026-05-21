@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Booking = require("../models/Booking");
 const Car = require("../models/Car");
+const verifyJWT = require("../middleware/verifyJWT");
 
 router.post("/bookings", async (req, res) => {
   try {
@@ -27,7 +28,7 @@ router.post("/bookings", async (req, res) => {
       endDate,
       driverNeeded,
       specialNote,
-      userEmail: "qwer@qwer.ty",
+      userEmail: req.user.email,
     });
     const saved = await booking.save();
 
@@ -39,9 +40,9 @@ router.post("/bookings", async (req, res) => {
   }
 });
 
-router.get("/my-bookings", async (req, res) => {
+router.get("/my-bookings", verifyJWT, async (req, res) => {
   try {
-    const bookings = await Booking.find({ userEmail: "qwer@qwer.ty" }).sort({
+    const bookings = await Booking.find({ userEmail: req.user.email }).sort({
       bookingDate: -1,
     });
     res.json(bookings);
@@ -50,7 +51,7 @@ router.get("/my-bookings", async (req, res) => {
   }
 });
 
-router.delete("/my-bookings/:id", async (req, res) => {
+router.delete("/my-bookings/:id", verifyJWT,async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
     if (!booking) {
