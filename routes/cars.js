@@ -35,7 +35,8 @@ router.get("/cars/:id", async (req, res) => {
 
 router.get("/my-cars", async (req, res) => {
   try {
-    const cars = await Car.find({ ownerEmail: req.user.email });
+    const ownerEmail = "qwer@qwer.ty";
+    const cars = await Car.find({ ownerEmail });
     res.json(cars);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -44,10 +45,13 @@ router.get("/my-cars", async (req, res) => {
 
 router.post("/cars", async (req, res) => {
   try {
-    const car = new Car({ ...req.body, ownerEmail: req.user.email });
+    // TEMPORARY: hardcode an email (replace with your own test email)
+    const tempOwnerEmail = "qwer@qwer.ty";
+    const car = new Car({ ...req.body, ownerEmail: tempOwnerEmail });
     const saved = await car.save();
     res.status(201).json(saved);
   } catch (err) {
+    console.error(err);
     res.status(400).json({ message: err.message });
   }
 });
@@ -55,6 +59,7 @@ router.post("/cars", async (req, res) => {
 router.patch("/cars/:id", async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
+    console.log(car, req.params.id);
     if (!car) {
       return res.status(404).json({ message: "Car not found" });
     }

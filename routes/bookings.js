@@ -3,7 +3,7 @@ const router = express.Router();
 const Booking = require("../models/Booking");
 const Car = require("../models/Car");
 
-router.post("/my-bookings", async (req, res) => {
+router.post("/bookings", async (req, res) => {
   try {
     const {
       carId,
@@ -21,7 +21,7 @@ router.post("/my-bookings", async (req, res) => {
       dailyRentPrice,
       driverNeeded,
       specialNote,
-      userEmail: req.user.email,
+      userEmail: "qwer@qwer.ty",
     });
     const saved = await booking.save();
 
@@ -35,7 +35,7 @@ router.post("/my-bookings", async (req, res) => {
 
 router.get("/my-bookings", async (req, res) => {
   try {
-    const bookings = await Booking.find({ userEmail: req.user.email }).sort({
+    const bookings = await Booking.find({ userEmail: "qwer@qwer.ty" }).sort({
       bookingDate: -1,
     });
     res.json(bookings);
