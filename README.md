@@ -1,6 +1,6 @@
 # DriveFleet – Backend API
 
-**API Base URL:** `https://drivefleet-server.vercel.app` *(replace with your actual deployed URL)*
+**API Base URL:** https://drivefleet-server-ljb5.onrender.com
 
 ## 🔧 Features
 
